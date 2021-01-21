@@ -4,7 +4,7 @@ const io = require('socket.io')(server)
 const PORT = process.env.PORT || 3000
 const { selectWords } = require ('./helpers/axios')
 
-let roundNumber = 1
+let roundNumber = 0
 let players = []
 
 io.on('connection', (socket) => {
@@ -22,7 +22,9 @@ io.on('connection', (socket) => {
   })
 
   socket.on('startRound', (payload) => {
+    roundNumber++
     selectWords(roundNumber + 2).then (data => {
+      io.emit("showWord")
       io.emit("setRoundNumber", roundNumber)
       io.emit("setCurrentRoundWords", data)
     })

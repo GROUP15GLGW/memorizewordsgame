@@ -1,8 +1,13 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
-    <p>{{ currentRoundWords }}</p>
+    <p
+    v-if="wordIsHidden === false"
+    >{{ currentRoundWords }}</p>
     <button type="button" @click="startRound">Start</button>
+    <form action="">
+      <input type="text" v-if="allowType === true">
+    </form>
   </div>
 </template>
 
@@ -13,11 +18,20 @@ export default {
   computed: {
     currentRoundWords () {
       return this.$store.state.currentRoundWords
+    },
+    wordIsHidden () {
+      return this.$store.state.wordIsHidden
+    },
+    allowType () {
+      return this.$store.state.allowType
     }
   },
   methods: {
     startRound () {
       this.$socket.emit('startRound')
+      setTimeout(() => {
+        this.$store.dispatch('hideWord')
+      }, 5000)
     }
   }
 }

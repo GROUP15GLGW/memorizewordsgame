@@ -12,7 +12,7 @@ async function getWords (amount) {
 
 async function selectWords (amount) {
   try {
-    let wordList = await getWords(50)
+    let wordList = await getWords(20)
 
     let data = wordList.splice (0, amount)
     

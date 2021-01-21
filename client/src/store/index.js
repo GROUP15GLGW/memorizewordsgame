@@ -5,6 +5,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    currentRoundWords: [],
+    roundNumber: 0,
     players: []
   },
   mutations: {
@@ -13,6 +15,9 @@ export default new Vuex.Store({
     },
     SOCKET_serverPlayers (state, payload) {
       state.players.push(payload)
+    },
+    SOCKET_setCurrentRoundWords (state, payload) {
+      state.currentRoundWords = payload
     }
   },
   actions: {

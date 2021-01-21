@@ -1,18 +1,50 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <p
+    v-if="wordIsHidden === false"
+    >{{ currentRoundWords }}</p>
+    <button type="button" @click="startRound">Start</button>
+    <form action="">
+      <input type="text" v-if="allowType === true">
+    </form>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
 export default {
   name: 'Home',
-  components: {
-    HelloWorld
+  computed: {
+    currentRoundWords () {
+      return this.$store.state.currentRoundWords
+    },
+    wordIsHidden () {
+      return this.$store.state.wordIsHidden
+    },
+    allowType () {
+      return this.$store.state.allowType
+    }
+  },
+  methods: {
+    startRound () {
+      this.matchEnded = false
+      this.$socket.emit('startRound')
+      setTimeout(() => {
+        this.$store.dispatch('hideWord')
+      }, 5000)
+    },
+    sendAnswers () {
+      this.$store.commit('checkAnswer', {
+        username: localStorage.username,
+        words: this.words.split(' ')
+      })
+      this.words = ''
+    }
+  },
+  data () {
+    return {
+      words: ''
+    }
   }
 }
 </script>

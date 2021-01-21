@@ -16,7 +16,7 @@ Vue.use(new VueSocketIO({
   }
 }))
 
-new Vue({
+export default new Vue({
   router,
   store,
   render: h => h(App)

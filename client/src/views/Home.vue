@@ -28,6 +28,7 @@ export default {
   },
   methods: {
     startRound () {
+      this.matchEnded = false
       this.$socket.emit('startRound')
       setTimeout(() => {
         this.$store.dispatch('hideWord')

@@ -33,6 +33,18 @@ export default {
       setTimeout(() => {
         this.$store.dispatch('hideWord')
       }, 5000)
+    },
+    sendAnswers () {
+      this.$store.commit('checkAnswer', {
+        username: localStorage.username,
+        words: this.words.split(' ')
+      })
+      this.words = ''
+    }
+  },
+  data () {
+    return {
+      words: ''
     }
   }
 }

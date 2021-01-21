@@ -36,6 +36,24 @@ export default new Vuex.Store({
     },
     allowType (state, payload) {
       state.allowType = payload
+    },
+    checkAnswer (state, payload) {
+      let point = 0
+      for (let i = 0; i < state.players.length; i++) {
+        if (state.players[i] === payload.username) {
+          for (let j = 0; j < payload.words.length; j++) {
+            for (let k = 0; k < state.currentRoundWords.length; k++) {
+              if (payload.words[j] === state.currentRoundWords[k]) {
+                point += 1
+              }
+            }
+          }
+        }
+      }
+      vm.$socket.emit('answers', {
+        username: localStorage.username,
+        point: point
+      })
     }
   },
   actions: {

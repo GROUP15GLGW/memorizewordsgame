@@ -1,5 +1,5 @@
-const app = require('express')
-const server = require('http').createServer()
+const app = require('express')()
+const server = require('http').createServer(app)
 const io = require('socket.io')(server)
 const PORT = process.env.PORT || 3000
 const { selectWords } = require ('./helpers/axios')
@@ -28,6 +28,15 @@ io.on('connection', (socket) => {
       io.emit("setRoundNumber", roundNumber)
       io.emit("setCurrentRoundWords", data)
     })
+  })
+  
+  socket.on('answers', payload => {
+    players.map(player => {
+      if (player.username === payload.username) {
+        player.point += payload.point
+      }
+    })
+    io.emit('receiveUpdatePlayer', players);
   })
 
   socket.on('resetRoundNumber', (payload) => {

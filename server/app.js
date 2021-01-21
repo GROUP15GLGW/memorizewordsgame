@@ -1,6 +1,8 @@
 const app = require('express')()
-const server = require('http').createServer(app)
+const server = require('http').createServer(express)
 const io = require('socket.io')(server)
+const PORT = process.env.PORT || 3000
+
 const { selectWords } = require ('./helpers/axios')
 
 let roundNumber = 1
@@ -20,26 +22,23 @@ server.listen(3000, () => {
   console.log('listening on port ' + 3000)
 })
 
-// selectWords(3).then (data => {
-//   console.log (data, 'round1Words')
-// })
+let players = []
 
-// selectWords(4).then (data => {
-//   console.log (data, 'round2Words')
-// })
+io.on('connection', (socket) => {
+  console.log('Socket.io client connected');
+  socket.emit('initPlayers', players)
 
-// selectWords(5).then (data => {
-//   console.log (data, 'round3Words')
-// })
+  socket.on('newPlayers', (payload) => {
+    // cek username validate
+    let user = {
+      username: payload,
+      points: 0
+    }
+    players.push(user)
+    io.emit('serverPlayers', user)
+  })
+})
 
-// selectWords(6).then (data => {
-//   console.log (data, 'round3Words')
-// })
-
-// selectWords(7).then (data => {
-//   console.log (data, 'round4Words')
-// })
-
-
-
-
+server.listen(PORT, () => {
+  console.log('Running on', PORT);
+})

@@ -2,6 +2,7 @@
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
     <p>{{ currentRoundWords }}</p>
+    <button type="button" @click="startRound">Start</button>
   </div>
 </template>
 
@@ -12,6 +13,11 @@ export default {
   computed: {
     currentRoundWords () {
       return this.$store.state.currentRoundWords
+    }
+  },
+  methods: {
+    startRound () {
+      this.$socket.emit('startRound')
     }
   }
 }

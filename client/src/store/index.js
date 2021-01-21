@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import vm from '../main'
 
 Vue.use(Vuex)
 
@@ -21,8 +22,14 @@ export default new Vuex.Store({
     SOCKET_setCurrentRoundWords (state, payload) {
       state.currentRoundWords = payload
     },
+    SOCKET_setRoundNumber (state, payload) {
+      state.roundNumber = payload
+    },
     SOCKET_showWord (state, payload) {
       state.wordIsHidden = false
+    },
+    SOCKET_matchEnd (state, payload) {
+      state.matchEnded = true
     },
     hideWord (state, payload) {
       state.wordIsHidden = payload
@@ -41,12 +48,17 @@ export default new Vuex.Store({
     },
     endRound (context, payload) {
       context.commit('allowType', false)
-      setTimeout(() => {
-        context.dispatch('startRound')
-      }, 5000)
+      console.log(context.state.roundNumber, 'round number ------------')
+      if (context.state.roundNumber <= 2) {
+        setTimeout(() => {
+          context.dispatch('startRound')
+        }, 5000)
+      } else {
+        vm.$socket.emit('resetRoundNumber')
+      }
     },
     startRound (context, payload) {
-      (new Vue()).$socket.client.emit('startRound') //unsolved
+      vm.$socket.emit('startRound')
       setTimeout(() => {
         context.dispatch('hideWord')
       }, 5000)

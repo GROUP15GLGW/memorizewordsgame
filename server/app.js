@@ -29,6 +29,10 @@ io.on('connection', (socket) => {
       io.emit("setCurrentRoundWords", data)
     })
   })
+
+  socket.on('resetRoundNumber', (payload) => {
+    roundNumber = 0
+  })
 })
 
 server.listen(PORT, () => {

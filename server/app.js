@@ -13,6 +13,7 @@ let correctAnsweredWords = {
 }
 
 let resultAnswerPerRound = []
+let clientDone = 0
 
 io.on('connection', (socket) => {
   console.log('Socket.io client connected');
@@ -29,6 +30,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('startRound', (payload) => {
+    roundNumber = 0
     roundNumber++
     selectWords(roundNumber + 2).then (data => {
       // currentRoundWords = data
@@ -71,6 +73,35 @@ io.on('connection', (socket) => {
 
   socket.on('resetRoundNumber', (payload) => {
     roundNumber = 0
+    io.emit("setRoundNumber", roundNumber)
+  })
+
+  socket.on('endRound', (payload) => {
+    clientDone++
+    console.log (clientDone)
+    if (roundNumber <= 3 && clientDone == players.length) {
+      clientDone = 0
+      setTimeout(() => {
+        roundNumber++
+        selectWords(roundNumber + 2).then (data => {
+          // currentRoundWords = data
+          saveWordsToClient = data
+          io.emit("allowType", false)
+          io.emit("showWord")
+          io.emit("setRoundNumber", roundNumber)
+          io.emit("setCurrentRoundWords", data)
+        })
+
+        setTimeout(() => {
+          currentRoundWords = []
+          io.emit("hideWords", [])
+        }, 10000)
+        
+      }, 5000)
+
+    } else if (roundNumber > 3) {
+      console.log('max rounds reached - match ended')
+    }
   })
 })
 

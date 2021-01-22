@@ -19,8 +19,8 @@
       <p v-for="(word, i) in currentRoundWords" :key="i">{{ word }}</p>
     </div><br>
     <form action="post" @submit.prevent="sendAnswer">
-      <input type="text" v-model="answer">
-      <button type="submit">ANSWER</button>
+      <input type="text" v-model="answer" v-if="allowType === true">
+      <button type="submit" v-if="allowType === true">ANSWER</button>
     </form>
 
     <div>
@@ -67,6 +67,9 @@ export default {
     },
     resultAnswer () {
       return this.$store.state.resultAnswer
+    },
+    allowType () {
+      return this.$store.state.allowType
     }
   },
   sockets: {

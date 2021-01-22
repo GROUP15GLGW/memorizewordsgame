@@ -11,6 +11,21 @@
     <div v-else>
       <p>NO DATA</p>
     </div>
+
+    <hr>
+    <button @click="startRound">START GAME</button>
+
+    <div>
+      <p v-for="(word, i) in currentRoundWords" :key="i">{{ word }}</p>
+    </div><br>
+    <form action="post" @submit.prevent="sendAnswer">
+      <input type="text" v-model="answer">
+      <button type="submit">ANSWER</button>
+    </form>
+
+    <div>
+      <p v-for="(result, i) in resultAnswer" :key="i">{{ result.username }} - {{ result.answer }} - {{ result.result }} </p>
+    </div><br>
   </div>
 </template>
 
@@ -18,7 +33,8 @@
 export default {
   data () {
     return {
-      username: ''
+      username: '',
+      answer: ''
     }
   },
   methods: {
@@ -26,11 +42,31 @@ export default {
       this.$socket.emit('newPlayers', this.username)
       localStorage.username = this.username // validate user has register
       this.username = ''
+    },
+    startRound () {
+      this.$socket.emit('startRound')
+      setTimeout(() => {
+        console.log('counting')
+        this.$socket.emit('hideWords')
+      }, 10000)
+    },
+    sendAnswer () {
+      this.$socket.emit('answers', {
+        username: localStorage.username,
+        answer: this.answer
+      })
+      this.answer = ''
     }
   },
   computed: {
     players () {
       return this.$store.state.players
+    },
+    currentRoundWords () {
+      return this.$store.state.currentRoundWords
+    },
+    resultAnswer () {
+      return this.$store.state.resultAnswer
     }
   },
   sockets: {

@@ -10,14 +10,26 @@ export default new Vuex.Store({
     roundNumber: 0,
     players: [],
     wordIsHidden: false,
-    allowType: false
+    allowType: false,
+    resultAnswer: []
   },
   mutations: {
+    // PLAYER DATA
     SOCKET_initPlayers (state, payload) {
       state.players = payload
     },
     SOCKET_serverPlayers (state, payload) {
       state.players.push(payload)
+    },
+    SOCKET_updatePlayerPoint (state, payload) {
+      state.players = payload
+    },
+    // SET WORDS
+    SOCKET_resultAnswer (state, payload) {
+      state.resultAnswer.push(payload)
+    },
+    SOCKET_hideWords (state, payload) { // clear words from all client
+      state.currentRoundWords = []
     },
     SOCKET_setCurrentRoundWords (state, payload) {
       state.currentRoundWords = payload
@@ -31,39 +43,11 @@ export default new Vuex.Store({
     SOCKET_matchEnd (state, payload) {
       state.matchEnded = true
     },
-    hideWord (state, payload) {
-      state.wordIsHidden = payload
-    },
     allowType (state, payload) {
       state.allowType = payload
-    },
-    checkAnswer (state, payload) {
-      let point = 0
-      for (let i = 0; i < state.players.length; i++) {
-        if (state.players[i] === payload.username) {
-          for (let j = 0; j < payload.words.length; j++) {
-            for (let k = 0; k < state.currentRoundWords.length; k++) {
-              if (payload.words[j] === state.currentRoundWords[k]) {
-                point += 1
-              }
-            }
-          }
-        }
-      }
-      vm.$socket.emit('answers', {
-        username: localStorage.username,
-        point: point
-      })
     }
   },
   actions: {
-    hideWord (context, payload) {
-      context.commit('hideWord', true)
-      context.commit('allowType', true)
-      setTimeout(() => {
-        context.dispatch('endRound')
-      }, 5000)
-    },
     endRound (context, payload) {
       context.commit('allowType', false)
       console.log(context.state.roundNumber, 'round number ------------')

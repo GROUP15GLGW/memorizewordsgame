@@ -1,7 +1,7 @@
 <template>
   <div class="game">
     <div class="container d-flex justify-content-center flex-row mb-3">
-      <button @click="startRound" class="btn btn-danger">Start</button>
+      <button @click="startRound" class="btn btn-danger" v-if="matchEnded === true">Start</button>
     </div>
     <div class="container row" style="height: 70vh;">
       <div class="col-md-2">
@@ -21,12 +21,13 @@
           <h4 v-for="(currentWord, idx) in currentRoundWords" :key="idx" class="m-1" style="padding: 10px 20px; background-color: rgb(252, 224, 13); border-radius: 30px;">
             {{ currentWord }}</h4>
         </div>
-        <div class="container">
+        <div class="container" v-if="allowType === true">
           <form
           @submit.prevent="sendAnswer"
           class="d-flex justify-content-center flex-column flex-sm-row">
             <input
             v-model="answer"
+            autocomplete="off"
             class="form-text mx-2 flex-grow-1" type="text"
               style="border: none; height: 30px; border-radius: 5px; text-align: center;" id="input-name">
             <button role="submit" class="btn btn-warning mx-2">Send</button>
@@ -60,6 +61,9 @@ export default {
         answer: this.answer
       })
       this.answer = ''
+    },
+    resetPlayerData () {
+      this.$socket.emit('clearPlayerData', localStorage.username)
     }
   },
   computed: {
@@ -71,9 +75,21 @@ export default {
     },
     resultAnswer () {
       return this.$store.state.resultAnswer
+    },
+    allowType () {
+      return this.$store.state.allowType
+    },
+    matchEnded () {
+      return this.$store.state.matchEnded
     }
   },
   sockets: {
+  },
+  mounted () {
+    window.onbeforeunload = function (e) {
+      this.resetPlayerData()
+      localStorage.clear()
+    }
   }
 }
 </script>

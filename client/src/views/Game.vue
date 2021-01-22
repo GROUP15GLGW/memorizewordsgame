@@ -22,14 +22,22 @@
         </div>
       </div>
       <div class="col-md-10 d-flex flex-column justify-content-between align-items-center">
+        <div
+        v-if="allowType === true">
+        <ul>
+          <li v-for="(result, idx) in resultAnswer" :key="idx">
+            <h3>
+            {{ result.username }} answered {{ result.answer }}, the answer is {{ answer.result }}
+            </h3>
+          </li>
+        </ul>
+        </div>
         <div class="container d-flex justify-content-center flex-wrap">
           <h4 v-for="(currentWord, idx) in currentRoundWords" :key="idx" class="m-1" style="padding: 10px 20px; background-color: rgb(252, 224, 13); border-radius: 30px;">
             {{ currentWord }}</h4>
         </div>
-        <div class="container">
-          <h1></h1>
-        </div>
         <div
+        v-if="allowType === true"
         class="container">
           <form
           @submit.prevent="sendAnswer"

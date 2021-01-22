@@ -1,13 +1,19 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <p
-    v-if="wordIsHidden === false"
-    >{{ currentRoundWords }}</p>
-    <button type="button" @click="startRound">Start</button>
-    <form action="">
-      <input type="text" v-if="allowType === true">
-    </form>
+    <div style="text-align: center;">
+      <h1 class="mb-5" style="font-size: 50px;">Remember me!</h1>
+    </div>
+    <div>
+      <form @submit.prevent="joinGame" style="display: flex; flex-direction: column; align-items: center;">
+        <div class="mb-3 d-flex flex-column align-items-center">
+          <label class="form-label" for="username">Username</label>
+          <input
+          v-model="username"
+          class="form-text" type="text" style="border: none; height: 30px; border-radius: 5px; text-align: center;" id="input-name">
+        </div>
+        <button class="btn btn-success">Play!</button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -15,36 +21,17 @@
 
 export default {
   name: 'Home',
-  computed: {
-    currentRoundWords () {
-      return this.$store.state.currentRoundWords
-    },
-    wordIsHidden () {
-      return this.$store.state.wordIsHidden
-    },
-    allowType () {
-      return this.$store.state.allowType
+  data () {
+    return {
+      username: ''
     }
   },
   methods: {
-    startRound () {
-      this.matchEnded = false
-      this.$socket.emit('startRound')
-      setTimeout(() => {
-        this.$store.dispatch('hideWord')
-      }, 5000)
-    },
-    sendAnswers () {
-      this.$store.commit('checkAnswer', {
-        username: localStorage.username,
-        words: this.words.split(' ')
-      })
-      this.words = ''
-    }
-  },
-  data () {
-    return {
-      words: ''
+    joinGame () {
+      this.$socket.emit('newPlayers', this.username)
+      localStorage.username = this.username
+      this.$router.push('/game')
+      this.username = ''
     }
   }
 }

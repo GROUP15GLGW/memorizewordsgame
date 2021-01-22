@@ -36,6 +36,9 @@ io.on('connection', (socket) => {
   socket.on('startRound', (payload) => {
     roundNumber = 0
     roundNumber++
+    console.log (roundNumber)
+    io.emit("matchEnd", false)
+    io.emit("allowType", false)
     selectWords(roundNumber + 2).then (data => {
       // currentRoundWords = data
       saveWordsToClient = data
@@ -82,8 +85,9 @@ io.on('connection', (socket) => {
 
   socket.on('endRound', (payload) => {
     clientDone++
-    console.log (clientDone)
-    if (roundNumber <= 3 && clientDone == players.length) {
+    // console.log (clientDone, 'client done')
+    if (roundNumber <= 2 && clientDone == players.length) {
+      console.log (roundNumber)
       clientDone = 0
       setTimeout(() => {
         roundNumber++
@@ -103,9 +107,24 @@ io.on('connection', (socket) => {
         
       }, 5000)
 
-    } else if (roundNumber > 3) {
+    } else if (roundNumber > 2 && clientDone == players.length) {
+      clientDone = 0
+      io.emit("matchEnd", true)
+      io.emit("allowType", false)
       console.log('max rounds reached - match ended')
+      players.map(player => {
+        player.points = 0
+      })
     }
+  })
+
+  socket.on('clearPlayerData', (payload) => {
+    players = players.filter(player => {
+      if (player.username !== payload) {
+        return player
+      }
+    })
+    console.log (players)
   })
 })
 

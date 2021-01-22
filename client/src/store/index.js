@@ -28,9 +28,6 @@ export default new Vuex.Store({
     SOCKET_resultAnswer (state, payload) {
       state.resultAnswer.push(payload)
     },
-    SOCKET_hideWords (state, payload) { // clear words from all client
-      state.currentRoundWords = []
-    },
     SOCKET_setCurrentRoundWords (state, payload) {
       state.currentRoundWords = payload
     },
@@ -43,26 +40,23 @@ export default new Vuex.Store({
     SOCKET_matchEnd (state, payload) {
       state.matchEnded = true
     },
-    allowType (state, payload) {
+    SOCKET_allowType (state, payload) {
       state.allowType = payload
+    },
+    hideWord (state, payload) {
+      state.wordIsHidden = payload
+    },
+    resultAnswerReset (state, payload) {
+      state.resultAnswer = []
     }
   },
   actions: {
-    endRound (context, payload) {
-      context.commit('allowType', false)
-      console.log(context.state.roundNumber, 'round number ------------')
-      if (context.state.roundNumber <= 2) {
-        setTimeout(() => {
-          context.dispatch('startRound')
-        }, 5000)
-      } else {
-        vm.$socket.emit('resetRoundNumber')
-      }
-    },
-    startRound (context, payload) {
-      vm.$socket.emit('startRound')
+    SOCKET_hideWords (context, payload) {
+      context.commit('hideWord', true)
+      context.commit('SOCKET_allowType', true)
+      context.state.currentRoundWords = []
       setTimeout(() => {
-        context.dispatch('hideWord')
+        vm.$socket.emit('endRound', localStorage.username)
       }, 5000)
     }
   },

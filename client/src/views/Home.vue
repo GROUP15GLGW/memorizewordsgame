@@ -18,7 +18,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'Home',
   data () {
@@ -32,6 +31,13 @@ export default {
       localStorage.username = this.username
       this.$router.push('/game')
       this.username = ''
+    }
+  },
+  beforeRouteEnter (to, from, next) {
+    if (!localStorage.username) {
+      next()
+    } else {
+      next('/')
     }
   }
 }

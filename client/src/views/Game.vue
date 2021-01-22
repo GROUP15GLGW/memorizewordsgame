@@ -1,9 +1,9 @@
 <template>
-  <div class="game">
+  <div class="game" style="width: 100vh">
     <div class="container d-flex justify-content-center flex-row mb-3">
       <button @click="startRound" class="btn btn-danger">Start</button>
     </div>
-    <div class="container row" style="height: 70vh;">
+    <div class="container row" style="height: 60vh;">
       <div class="col-md-2">
         <h4>Player List</h4>
         <ul class="list-group">
@@ -15,6 +15,11 @@
             <span class="badge bg-warning rounded-pill">{{ player.points }}</span>
           </li>
         </ul>
+        <div style="margin: 20px">
+        <button
+          class="btn btn-success btn-sm form-control mb-2"
+          @click="exitGame">Exit</button>
+        </div>
       </div>
       <div class="col-md-10 d-flex flex-column justify-content-between align-items-center">
         <div class="container d-flex justify-content-center flex-wrap">
@@ -22,6 +27,10 @@
             {{ currentWord }}</h4>
         </div>
         <div class="container">
+          <h1></h1>
+        </div>
+        <div
+        class="container">
           <form
           @submit.prevent="sendAnswer"
           class="d-flex justify-content-center flex-column flex-sm-row">
@@ -60,6 +69,10 @@ export default {
         answer: this.answer
       })
       this.answer = ''
+    },
+    exitGame () {
+      localStorage.clear()
+      this.$router.push('/')
     }
   },
   computed: {
@@ -71,9 +84,22 @@ export default {
     },
     resultAnswer () {
       return this.$store.state.resultAnswer
+    },
+    wordIsHidden () {
+      return this.$store.state.wordIsHidden
+    },
+    allowType () {
+      return this.$store.state.allowType
     }
   },
   sockets: {
+  },
+  beforeRouteEnter (to, from, next) {
+    if (!localStorage.username) {
+      next('/')
+    } else {
+      next()
+    }
   }
 }
 </script>

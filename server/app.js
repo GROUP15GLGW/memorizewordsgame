@@ -21,8 +21,12 @@ io.on('connection', (socket) => {
 
   socket.on('newPlayers', (payload) => {
     // cek username validate
+    const samePlayers = players.filter(el => {
+      return el.username = payload
+    })
+    const isSameUsername = samePlayers.length > 0
     let user = {
-      username: payload,
+      username: isSameUsername ? `${payload}${samePlayers.length+1+''}` : payload,
       points: 0
     }
     players.push(user)

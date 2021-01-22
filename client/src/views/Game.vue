@@ -1,12 +1,12 @@
 <template>
-  <div class="game">
+  <div class="game" style="width: 100vh">
     <div class="container d-flex justify-content-center flex-row mb-3">
       <button @click="startRound" class="btn btn-danger" v-if="matchEnded === true">Start</button>
     </div>
-    <div class="container row" style="height: 70vh;">
+    <div class="container row" style="height: 60vh;">
       <div class="col-md-2">
         <h4>Player List</h4>
-        <ul class="list-group">
+        <ul style="overflow: auto; height: 30vh" class="list-group">
           <li
           v-for="(player, index) in players"
           :key="index"
@@ -15,8 +15,23 @@
             <span class="badge bg-warning rounded-pill">{{ player.points }}</span>
           </li>
         </ul>
+        <div style="margin: 20px">
+        <button
+          class="btn btn-success btn-sm form-control mb-2"
+          @click="exitGame">Exit</button>
+        </div>
       </div>
       <div class="col-md-10 d-flex flex-column justify-content-between align-items-center">
+        <div
+        v-if="allowType === true">
+        <ul style="list style: none">
+          <li v-for="(result, idx) in resultAnswer" :key="idx">
+            <h4>
+            {{ result.username }} answered {{ result.answer }}, the answer is {{ result.result }}
+            </h4>
+          </li>
+        </ul>
+        </div>
         <div class="container d-flex justify-content-center flex-wrap">
           <h4 v-for="(currentWord, idx) in currentRoundWords" :key="idx" class="m-1" style="padding: 10px 20px; background-color: rgb(252, 224, 13); border-radius: 30px;">
             {{ currentWord }}</h4>
@@ -62,8 +77,9 @@ export default {
       })
       this.answer = ''
     },
-    resetPlayerData () {
-      this.$socket.emit('clearPlayerData', localStorage.username)
+    exitGame () {
+      localStorage.clear()
+      this.$router.push('/')
     }
   },
   computed: {
@@ -76,6 +92,9 @@ export default {
     resultAnswer () {
       return this.$store.state.resultAnswer
     },
+    wordIsHidden () {
+      return this.$store.state.wordIsHidden
+    },
     allowType () {
       return this.$store.state.allowType
     },
@@ -84,6 +103,13 @@ export default {
     }
   },
   sockets: {
+  },
+  beforeRouteEnter (to, from, next) {
+    if (!localStorage.username) {
+      next('/')
+    } else {
+      next()
+    }
   },
   mounted () {
     window.onbeforeunload = function (e) {

@@ -6,7 +6,7 @@
     <div class="container row" style="height: 60vh;">
       <div class="col-md-2">
         <h4>Player List</h4>
-        <ul class="list-group">
+        <ul style="overflow: auto; height: 30vh" class="list-group">
           <li
           v-for="(player, index) in players"
           :key="index"
@@ -24,11 +24,11 @@
       <div class="col-md-10 d-flex flex-column justify-content-between align-items-center">
         <div
         v-if="allowType === true">
-        <ul>
+        <ul style="list style: none">
           <li v-for="(result, idx) in resultAnswer" :key="idx">
-            <h3>
-            {{ result.username }} answered {{ result.answer }}, the answer is {{ answer.result }}
-            </h3>
+            <h4>
+            {{ result.username }} answered {{ result.answer }}, the answer is {{ result.result }}
+            </h4>
           </li>
         </ul>
         </div>

@@ -6,7 +6,7 @@
       <button type="submit">JOIN GAME</button>
     </form>
     <div  v-if="players.length > 0">
-      <p v-for="(player, i) in players" :key="i">{{ player.username }} - {{ player.points }} points</p>
+      <p v-for="(player, i) in players" :key="i">{{ player.username }} - {{ player.result }}</p>
     </div>
     <div v-else>
       <p>NO DATA</p>

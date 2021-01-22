@@ -36,9 +36,7 @@
           <h4 v-for="(currentWord, idx) in currentRoundWords" :key="idx" class="m-1" style="padding: 10px 20px; background-color: rgb(252, 224, 13); border-radius: 30px;">
             {{ currentWord }}</h4>
         </div>
-        <div
-        v-if="allowType === true"
-        class="container">
+        <div class="container" v-if="allowType === true">
           <form
           @submit.prevent="sendAnswer"
           class="d-flex justify-content-center flex-column flex-sm-row">

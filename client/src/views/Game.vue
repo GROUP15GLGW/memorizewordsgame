@@ -1,7 +1,7 @@
 <template>
   <div class="game" style="width: 100vh">
     <div class="container d-flex justify-content-center flex-row mb-3">
-      <button @click="startRound" class="btn btn-danger">Start</button>
+      <button @click="startRound" class="btn btn-danger" v-if="matchEnded === true">Start</button>
     </div>
     <div class="container row" style="height: 60vh;">
       <div class="col-md-2">
@@ -44,6 +44,7 @@
           class="d-flex justify-content-center flex-column flex-sm-row">
             <input
             v-model="answer"
+            autocomplete="off"
             class="form-text mx-2 flex-grow-1" type="text"
               style="border: none; height: 30px; border-radius: 5px; text-align: center;" id="input-name">
             <button role="submit" class="btn btn-warning mx-2">Send</button>
@@ -98,6 +99,9 @@ export default {
     },
     allowType () {
       return this.$store.state.allowType
+    },
+    matchEnded () {
+      return this.$store.state.matchEnded
     }
   },
   sockets: {
@@ -107,6 +111,12 @@ export default {
       next('/')
     } else {
       next()
+    }
+  },
+  mounted () {
+    window.onbeforeunload = function (e) {
+      this.resetPlayerData()
+      localStorage.clear()
     }
   }
 }

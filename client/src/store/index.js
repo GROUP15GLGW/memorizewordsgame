@@ -11,7 +11,8 @@ export default new Vuex.Store({
     players: [],
     wordIsHidden: false,
     allowType: false,
-    resultAnswer: []
+    resultAnswer: [],
+    matchEnded: true
   },
   mutations: {
     // PLAYER DATA
@@ -38,10 +39,13 @@ export default new Vuex.Store({
       state.wordIsHidden = false
     },
     SOCKET_matchEnd (state, payload) {
-      state.matchEnded = true
+      state.matchEnded = payload
     },
     SOCKET_allowType (state, payload) {
       state.allowType = payload
+    },
+    SOCKET_resetStorage (state, payload) {
+      localStorage.clear()
     },
     hideWord (state, payload) {
       state.wordIsHidden = payload
